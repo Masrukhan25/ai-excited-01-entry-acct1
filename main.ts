@@ -1,9 +1,9 @@
-import { copyFile, mkdir } from 'node:fs/promises';
-import { join } from 'node:path';
+import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const outputDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
-// Resolve the artwork beside this program, regardless of the working directory.
-const source = new URL('./entry.png', import.meta.url);
-
-await mkdir(outputDir, { recursive: true });
-await copyFile(source, join(outputDir, 'entry.png'));
+const programDirectory = dirname(fileURLToPath(import.meta.url));
+const imageBytes = readFileSync(join(programDirectory, 'entry.png'));
+const outputDirectory = process.env.MAKEFUN_OUTPUT_DIR || '/output';
+mkdirSync(outputDirectory, { recursive: true });
+writeFileSync(join(outputDirectory, 'entry.png'), imageBytes);
